@@ -12,10 +12,10 @@ class RetrofitManager {
 
   private constructor() {
     retrofit = Retrofit.Builder()
-        .baseUrl(Configs.SERVER_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build();
+      .baseUrl(Configs.SERVER_URL)
+      .addConverterFactory(GsonConverterFactory.create())
+      .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+      .build();
   }
 
 

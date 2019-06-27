@@ -25,7 +25,6 @@ class StoreFavFragment(var storeFavActivity: StoreFavActivity) : androidx.fragme
   lateinit var favAdpter: StoreFavAdapter;
 
 
-
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -42,7 +41,6 @@ class StoreFavFragment(var storeFavActivity: StoreFavActivity) : androidx.fragme
     super.onViewCreated(view, savedInstanceState)
 
     RecyViewSetup(recycler_view_store_fav, favAdpter).build()
-
 
 
   }

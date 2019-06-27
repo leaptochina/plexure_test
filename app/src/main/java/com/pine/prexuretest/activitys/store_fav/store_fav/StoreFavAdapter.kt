@@ -14,6 +14,8 @@ import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnCheckedChangeLi
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnClickListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnItemClickListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyViewHolder
+import com.blueberrysolution.pinelib19.pop_up_windows.msgbox.MessageBox
+import com.blueberrysolution.pinelib19.pop_up_windows.msgbox.OnMessageClickListener
 import com.blueberrysolution.pinelib19.view.recycler_view.MyRecyViewHolder
 import com.blueberrysolution.pinelib19.view.recycler_view.RecyclerViewBaseAdapter
 import com.pine.prexuretest.R
@@ -24,8 +26,10 @@ import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavViewHolder
 import com.pine.prexuretest.beans.Store
 
 
-class StoreFavAdapter(var upperFregment: StoreFavFragment): RecyclerViewBaseAdapter<StoreFavViewHolder>() {
+class StoreFavAdapter(var upperFregment: StoreFavFragment) :
+  RecyclerViewBaseAdapter<StoreFavViewHolder>(), OnMessageClickListener {
 
+  var deletingStore: Store? = null;
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreFavViewHolder {
     return MyRecyViewHolder.i<StoreFavViewHolder>(parent, R.layout.store_fav_adapter)
@@ -51,12 +55,24 @@ class StoreFavAdapter(var upperFregment: StoreFavFragment): RecyclerViewBaseAdap
   }
 
   fun onRemoveStore(view: View) {
-    var store = view!!.tag as Store;
+    deletingStore = view!!.tag as Store;
 
-    StoreFavSharePreference.i().remove(store);
+    MessageBox.i().setListener(this).show("Do you want to remove this store from favorite", "No", "Yes");
 
-    upperFregment.favAdpter.notifyDataSetChanged();
-    upperFregment.storeFavActivity.storeListFragment!!.storeAdpter.notifyDataSetChanged();
+
+  }
+
+  override fun messageBoxChoose(id: Int) {
+    if (id == 2)
+    {
+      if (deletingStore != null){
+        StoreFavSharePreference.i().remove(deletingStore!!);
+
+        upperFregment.favAdpter.notifyDataSetChanged();
+        upperFregment.storeFavActivity.storeListFragment!!.storeAdpter.notifyDataSetChanged();
+      }
+
+    }
 
   }
 }

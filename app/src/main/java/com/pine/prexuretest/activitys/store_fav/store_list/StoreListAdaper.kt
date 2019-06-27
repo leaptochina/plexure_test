@@ -22,10 +22,12 @@ import com.pine.prexuretest.R
 import com.pine.prexuretest.activitys.store_fav.StoreFavActivity
 import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavSharePreference
 import com.pine.prexuretest.beans.Store
+import com.pine.prexuretest.configs.Configs
 import kotlinx.android.synthetic.main.store_list_adapter.view.*
 
 
-class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
+class StoreListAdaper(var upperFregment: StoreListFragment) :
+  RecyclerViewBaseAdapter<StoreListViewHolder>() {
 
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreListViewHolder {
@@ -44,10 +46,9 @@ class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAda
 
     var data = upperFregment.processedList[position];
 
-    if (upperFregment.isShowAddress){
+    if (upperFregment.isShowAddress) {
       holder.address!!.text = data.address
-    }
-    else{
+    } else {
       holder.address!!.text = ""
     }
 
@@ -57,20 +58,19 @@ class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAda
     holder.switch_fav!!.isChecked = false
 
     //Change backgrand Gray if distance is too far
-    if (data.distance <= 8600000){
+    if (data.distance <= Configs.CANNOT_FAV_DISTANCE) {
       holder.switch_fav!!.isEnabled = true;
       holder.itemView.alpha = 1f;
       holder.itemView.setBackgroundColor(Color.TRANSPARENT);
 
-    }
-    else{
+    } else {
       holder.switch_fav!!.isEnabled = false;
       holder.itemView.alpha = 0.75f;
       holder.itemView.setBackgroundColor(Color.GRAY);
     }
 
-    for(favs in StoreFavSharePreference.i().favStores){
-      if (favs.id == data.id){
+    for (favs in StoreFavSharePreference.i().favStores) {
+      if (favs.id == data.id) {
         holder.switch_fav!!.isChecked = true;
         break;
       }
@@ -85,10 +85,9 @@ class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAda
   fun onAddOrRemoveFavClick(buttonView: CompoundButton?, isChecked: Boolean) {
     var store = buttonView!!.tag as Store;
 
-    if (isChecked){
+    if (isChecked) {
       StoreFavSharePreference.i().add(store);
-    }
-    else{
+    } else {
       StoreFavSharePreference.i().remove(store);
     }
 

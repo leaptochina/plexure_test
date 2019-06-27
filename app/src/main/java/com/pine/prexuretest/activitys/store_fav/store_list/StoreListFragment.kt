@@ -171,9 +171,9 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   }
 
   private fun extractAllFeatures() {
-    for (store in originStoreInfo){
-      for(feature in store.featureList){
-        if (!allFeatures.contains(feature)){
+    for (store in originStoreInfo) {
+      for (feature in store.featureList) {
+        if (!allFeatures.contains(feature)) {
           allFeatures.add(feature);
         }
       }

@@ -4,13 +4,13 @@ import com.blueberrysolution.pinelib19.addone.share_preferences.Sp
 import com.google.gson.Gson
 import com.pine.prexuretest.beans.Store
 
-class StoreFavSharePreference(){
+class StoreFavSharePreference() {
   var favStores: ArrayList<Store> = ArrayList<Store>();
 
   init {
 
     var favs = Sp.i.get("favs", "");
-    if (!favs.equals("")){
+    if (!favs.equals("")) {
       var list = Gson().fromJson<Array<Store>>(favs, Array<Store>::class.java).toMutableList()
 
 
@@ -20,7 +20,7 @@ class StoreFavSharePreference(){
     }
   }
 
-  fun add(store: Store){
+  fun add(store: Store) {
     favStores.add(store);
     save();
   }
@@ -32,7 +32,7 @@ class StoreFavSharePreference(){
     save();
   }
 
-  fun save(){
+  fun save() {
     var favs = Gson().toJson(favStores);
 
     Sp.i.put("favs", favs);
@@ -40,10 +40,10 @@ class StoreFavSharePreference(){
   }
 
 
-  companion object{
+  companion object {
     var storeFavSharePreference: StoreFavSharePreference? = null;
-    fun i(): StoreFavSharePreference{
-      if (storeFavSharePreference == null){
+    fun i(): StoreFavSharePreference {
+      if (storeFavSharePreference == null) {
         storeFavSharePreference = StoreFavSharePreference();
       }
       return storeFavSharePreference!!;

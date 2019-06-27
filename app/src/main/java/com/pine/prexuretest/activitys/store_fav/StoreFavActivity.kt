@@ -69,20 +69,20 @@ class StoreFavActivity : PineActivity(), OnBroadcast, OnMessageClickListener {
       TabLayoutController(tab_stort_fav, viewpage_store_fav, pagerArrayList, vpAdapter!!)
 
 
-
   }
 
   override fun onBroadcast(key: String, withObject: Any?) {
-    if (key.equals("LocationPermissions")){
+    if (key.equals("LocationPermissions")) {
       var isGranted = withObject as Boolean
-      if (!isGranted){
+      if (!isGranted) {
         MessageBox.i().setListener(this).show("Premission Error", "Try Again", "Ignore");
       }
 
     }
   }
+
   override fun messageBoxChoose(id: Int) {
-    if (id == 1){
+    if (id == 1) {
       OnGpsBroadcast.i().showGPSContacts()
     }
   }
