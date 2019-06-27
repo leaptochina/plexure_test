@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="fav_store_title">My Favorite Stores</string>
 </resources>

@@ -17,9 +17,10 @@ import com.blueberrysolution.pinelib19.view.recycler_view.MyRecyViewHolder
 import com.blueberrysolution.pinelib19.view.recycler_view.RecyclerViewBaseAdapter
 import com.pine.prexuretest.R
 import com.pine.prexuretest.activitys.store_fav.StoreFavActivity
+import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavFragment
 
 
-class StoreListAdaper(var upperActivity: StoreListFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
+class StoreFavAdapter(var upperActivity: StoreFavFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
 
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreListViewHolder {
@@ -43,8 +44,6 @@ class StoreListAdaper(var upperActivity: StoreListFragment): RecyclerViewBaseAda
     holder.name!!.text = data.name
 
 
-    //holder.itemView.tag = fav;
-    //holder.itemView.setOnClickListener(MyOnClickListener(::onFavListClick))
-
   }
 }
+

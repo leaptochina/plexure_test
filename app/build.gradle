@@ -48,7 +48,8 @@ dependencies {
     implementation 'org.jetbrains.exposed:exposed:0.13.6'
     //Recycle View
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-
+    //下拉刷新的加载头
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
 
     //RxJava 异步转同步

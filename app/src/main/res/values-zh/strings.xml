@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">My Application</string>
+  <string name="fav_store_title">店铺收藏</string>
+</resources>

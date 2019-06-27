@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:background="#fff"
+  android:layout_height="match_parent">
+
+
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="50dp">
+
+      <TextView
+        android:text="@string/fav_store_title"
+        android:textSize="20sp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#000"
+        android:layout_centerVertical="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:id="@+id/title" android:singleLine="true"
+        android:layout_gravity="center_vertical" android:layout_marginStart="20dp"/>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_view_store_fav"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+
+
+  </LinearLayout>
+
+
+</FrameLayout>

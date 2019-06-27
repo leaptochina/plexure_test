@@ -7,7 +7,9 @@ import com.blueberrysolution.pinelib19.addone.tablayout.TabDataBean
 import com.blueberrysolution.pinelib19.addone.tablayout.TabLayoutController
 import com.blueberrysolution.pinelib19.addone.tablayout.VpAdapter
 import com.blueberrysolution.pinelib19.debug.G
+import com.blueberrysolution.pinelib19.view.recycler_view.RefreshLoadmoreListener
 import com.pine.prexuretest.R
+import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavFragment
 import com.pine.prexuretest.activitys.store_fav.store_list.StoreListFragment
 import com.pine.prexuretest.retrofit.Requests
 import com.pine.prexuretest.retrofit.RetrofitManager
@@ -20,7 +22,11 @@ class StoreFavActivity : PineActivity() {
   var vpAdapter: VpAdapter? = null;
   var tabLayoutController: TabLayoutController? = null;
 
+
   var pagerArrayList: ArrayList<TabDataBean> = ArrayList();
+
+  var storeListFragment: StoreListFragment? = null;
+  var storeFavFragment: StoreFavFragment? = null;
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -32,11 +38,20 @@ class StoreFavActivity : PineActivity() {
   }
 
   private fun initViewPage() {
+    storeListFragment = StoreListFragment();
+    storeFavFragment = StoreFavFragment();
 
     pagerArrayList.add(
       TabDataBean(
-        StoreListFragment(),
+        storeListFragment!!,
         "Stores",
+        R.drawable.abc_ratingbar_material
+      )
+    );
+    pagerArrayList.add(
+      TabDataBean(
+        storeFavFragment!!,
+        "Favs",
         R.drawable.abc_ratingbar_material
       )
     );
@@ -44,7 +59,11 @@ class StoreFavActivity : PineActivity() {
 
     tabLayoutController =
       TabLayoutController(tab_stort_fav, viewpage_store_fav, pagerArrayList, vpAdapter!!)
+
+
+
   }
+
 
 
 }

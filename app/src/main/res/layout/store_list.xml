@@ -6,30 +6,34 @@
   android:layout_height="match_parent">
 
 
-  <androidx.core.widget.NestedScrollView
+
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:background="#F0F0F0"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <LinearLayout
+    <include
+      layout="@layout/store_list_title"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical" >
+      android:layout_height="wrap_content" />
 
-      <include
-        layout="@layout/store_list_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+      android:id="@+id/swipe_refresh_store_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_store_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
+  </LinearLayout>
 
-    </LinearLayout>
-  </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>
