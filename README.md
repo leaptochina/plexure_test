@@ -11,7 +11,7 @@ Runing Environment:
 PS:
   When user's location changes, the list will refresh automatically
   I put the distance large than 8600km cannot add to fav, you can modify this config on configs/Configs.kt
-
+  I cannot understand sort by featurelist property, this sorting basis is fuzzy.
 
 
 I choose the top 4 features, they are
