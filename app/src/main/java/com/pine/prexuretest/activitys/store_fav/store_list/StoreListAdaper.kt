@@ -42,8 +42,13 @@ class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAda
 
     var data = upperFregment.processedList[position];
 
+    if (upperFregment.isShowAddress){
+      holder.address!!.text = data.address
+    }
+    else{
+      holder.address!!.text = ""
+    }
 
-    holder.address!!.text = data.address
     holder.distance!!.text = (data.distance / 1000).toString() + " km";
     holder.featureList!!.text = data.featureList.toString();
     holder.name!!.text = data.name

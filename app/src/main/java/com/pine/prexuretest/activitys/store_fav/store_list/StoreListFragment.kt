@@ -13,6 +13,8 @@ import com.blueberrysolution.pinelib19.addone.broadcast.OnBroadcast
 import com.blueberrysolution.pinelib19.addone.broadcast.gps.OnGpsBroadcast
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnClickListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnItemClickListener
+import com.blueberrysolution.pinelib19.addone.mytimer.MyTimer
+import com.blueberrysolution.pinelib19.addone.mytimer.OnTimerListener
 import com.blueberrysolution.pinelib19.net.entry.N
 import com.blueberrysolution.pinelib19.view.recycler_view.RecyViewSetup
 import com.blueberrysolution.pinelib19.view.recycler_view.RefreshLoadmoreListener
@@ -26,10 +28,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_store_fav.*
 import kotlinx.android.synthetic.main.store_list.*
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.Observer
 
 
 class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragment.app.Fragment(),
   OnBroadcast {
+
 
 
   lateinit var innerView: View;
@@ -40,6 +48,8 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   var originStoreInfo: List<Store> = ArrayList<Store>();
   var processedList: List<Store> = ArrayList<Store>();
 
+  var isShowAddress = false;
+
   var api = RetrofitManager.i().create(Requests::class.java)
 
   override fun onCreateView(
@@ -48,7 +58,7 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
     savedInstanceState: Bundle?
   ): View? {
     innerView = A.v(R.layout.store_list)
-    storeAdpter = StoreListAdaper(this);
+    storeAdpter = StoreListAdaper(this)
     Broadcast.i.reg("onGpsLocationChanged", this)
 
     return innerView;
@@ -72,11 +82,6 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
 
 
 
-    //解决数据加载不完的问题
-    recycler_view_store_list.isNestedScrollingEnabled = false
-    recycler_view_store_list.setHasFixedSize(true)
-    //解决数据加载完成后, 没有停留在顶部的问题
-    recycler_view_store_list.isFocusable = false
 
 
     refreshLoadmoreListener = RefreshLoadmoreListener(swipe_refresh_store_list, ::refreshData)
@@ -102,7 +107,9 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { works ->
+
           originStoreInfo = works;
+          isShowAddress = false;
 
           sortData()
         }
@@ -114,17 +121,61 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
 
 
   private fun sortData() {
-
-
     processedList = originStoreInfo;
+
+
+
+
     refreshUI();
   }
+
+
 
   private fun refreshUI() {
     refreshLoadmoreListener!!.stopRefresh()
 
     storeAdpter.notifyDataSetChanged();
+
+    setUp2SecsDelay()
   }
+
+  private fun setUp2SecsDelay() {
+    val observable = Observable.create(ObservableOnSubscribe<Int> { emitter ->
+      try {
+        Thread.sleep(2000)
+      } catch (e: Exception) {
+
+      }
+
+      emitter.onNext(1)
+      emitter.onComplete()
+    })
+
+    val observer = object : Observer<Int> {
+      override fun onSubscribe(d: Disposable?) {
+
+      }
+
+      override fun onNext(value: Int?) {
+
+      }
+
+      override fun onError(e: Throwable?) {
+
+      }
+
+      override fun onComplete() {
+        isShowAddress = true;
+        storeAdpter.notifyDataSetChanged();
+      }
+    }
+
+    observable.subscribeOn(Schedulers.newThread()) // 1. 指定被观察者 生产事件的线程
+      .observeOn(AndroidSchedulers.mainThread())  // 2. 指定观察者 接收 & 响应事件的线程
+      .subscribe(observer); // 3. 最后再通过订阅（subscribe）连接观察者和被观察者
+
+  }
+
 
 
 }

@@ -42,10 +42,10 @@ class StoreFavAdapter(var upperFregment: StoreFavFragment): RecyclerViewBaseAdap
     var data = StoreFavSharePreference.i().favStores[position];
 
 
+
     holder.address!!.text = data.address
     holder.featureList!!.text = data.featureList.toString();
     holder.name!!.text = data.name
-
     holder.delete!!.tag = data;
     holder.delete!!.setOnClickListener(MyOnClickListener(::onRemoveStore))
   }
