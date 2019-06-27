@@ -28,11 +28,13 @@ import kotlinx.android.synthetic.main.store_list_title.*
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
+import android.widget.Toast
+import android.content.DialogInterface
+import android.app.AlertDialog
 
 
 class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragment.app.Fragment(),
   OnBroadcast {
-
 
 
   lateinit var innerView: View;
@@ -40,11 +42,14 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   var refreshLoadmoreListener: RefreshLoadmoreListener? = null;
 
 
-  var originStoreInfo: List<Store> = ArrayList<Store>();
-  var processedList: List<Store> = ArrayList<Store>();
+  var originStoreInfo: ArrayList<Store> = ArrayList<Store>();
+  var processedList: ArrayList<Store> = ArrayList<Store>();
 
   var isShowAddress = false;
   var sortMethod = 0;
+
+  var mustIncludes: ArrayList<String> = ArrayList<String>();
+  var allFeatures: ArrayList<String> = ArrayList<String>();
 
   var api = RetrofitManager.i().create(Requests::class.java)
 
@@ -58,7 +63,6 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
     Broadcast.i.reg("onGpsLocationChanged", this)
 
 
-
     return innerView;
   }
 
@@ -69,23 +73,47 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   }
 
   fun onFilterClick(view: View) {
+    val builder = AlertDialog.Builder(A.a())
+    builder.setTitle("Please Feature Must Included")
 
+    mustIncludes.clear()
+    val features = arrayOfNulls<String>(allFeatures.size)
+    allFeatures.toArray(features)
+
+
+    builder.setMultiChoiceItems(features, null,
+      DialogInterface.OnMultiChoiceClickListener { dialog, which, isChecked ->
+        if (isChecked) {
+          mustIncludes.add(allFeatures[which])
+        } else {
+          mustIncludes.remove(allFeatures[which])
+        }
+      })
+    builder.setNeutralButton("Choose All",
+      DialogInterface.OnClickListener { dialog, which ->
+        mustIncludes.addAll(allFeatures);
+        sortData()
+      })
+    builder.setPositiveButton("OK",
+      DialogInterface.OnClickListener { dialog, which ->
+        sortData()
+      })
+
+    builder.show()
   }
 
   fun onSortClick(view: View) {
-    if (sortMethod == 0){
+    if (sortMethod == 0) {
       sortMethod = 1;
       sort_btn.setImageResource(R.drawable.xiangshangzhanhang)
       T.t("Sort by distance (Increase)")
       //increase
-    }
-    else if (sortMethod == 1){
+    } else if (sortMethod == 1) {
       sortMethod = 2;
       sort_btn.setImageResource(R.drawable.xiangxiazhanhang)
       T.t("Sort by distance (Decrease)")
       //Decrease
-    }
-    else{
+    } else {
       sortMethod = 0;
       sort_btn.setImageResource(R.drawable.kuaisubianpai)
       T.t("Default Sort")
@@ -95,7 +123,7 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   }
 
   override fun onBroadcast(key: String, withObject: Any?) {
-    if (key.equals("onGpsLocationChanged")){
+    if (key.equals("onGpsLocationChanged")) {
 
       refreshData();
 
@@ -103,12 +131,13 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   }
 
 
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
     refreshLoadmoreListener = RefreshLoadmoreListener(swipe_refresh_store_list, ::refreshData)
-    RecyViewSetup(recycler_view_store_list, storeAdpter).setOnRefreshLoadmoreListener(refreshLoadmoreListener).build()
+    RecyViewSetup(recycler_view_store_list, storeAdpter).setOnRefreshLoadmoreListener(
+      refreshLoadmoreListener
+    ).build()
 
 
 
@@ -119,11 +148,10 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
 
   fun refreshData() {
     refreshLoadmoreListener!!.startRefresh()
-    if ( OnGpsBroadcast.i().lastLocation == null){
+    if (OnGpsBroadcast.i().lastLocation == null) {
       T.t("Waiting for Locating...")
 
-    }
-    else{
+    } else {
       var la = OnGpsBroadcast.i().lastLocation?.latitude!!;
       var lo = OnGpsBroadcast.i().lastLocation?.longitude!!
       api.getStores(la, lo, 100000000, 100)
@@ -134,20 +162,31 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
           originStoreInfo = works;
           isShowAddress = false;
 
+          extractAllFeatures()
           sortData()
         }
-
 
     }
 
   }
 
+  private fun extractAllFeatures() {
+    for (store in originStoreInfo){
+      for(feature in store.featureList){
+        if (!allFeatures.contains(feature)){
+          allFeatures.add(feature);
+        }
+      }
+    }
+  }
+
 
   private fun sortData() {
-    processedList = originStoreInfo;
+    processedList.clear()
+    processedList.addAll(originStoreInfo);
 
-    if (sortMethod > 0){
-      Collections.sort(processedList, object : Comparator<Store>{
+    if (sortMethod > 0) {
+      Collections.sort(processedList, object : Comparator<Store> {
         override fun compare(o1: Store, o2: Store): Int {
           var i = o1.distance - o2.distance
           if (sortMethod == 1) {
@@ -158,11 +197,42 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
       })
     }
 
+    filterData()
 
 
+  }
+
+  private fun filterData() {
+    if (mustIncludes.count() != 0) {
+      var y = 0;
+      for (indice in processedList.indices) {
+        val store = processedList[indice - y]
+        if (!isTotalContain(store)) {
+          processedList.removeAt(indice - y)
+          y++
+        }
+
+      }
+    }
     refreshUI();
   }
 
+  //Check whether store contain all features
+  private fun isTotalContain(store: Store): Boolean {
+    for (mustInclude in mustIncludes) {
+      var found = false;
+      for (feature in store.featureList) {
+        if (feature.equals(mustInclude)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return false
+      }
+    }
+    return true
+  }
 
 
   private fun refreshUI() {
@@ -209,7 +279,6 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
       .subscribe(observer);
 
   }
-
 
 
 }
