@@ -10,8 +10,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:name=".activitys.App"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
-        <activity android:name=".activitys.store_list.MainActivity">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".activitys.store_fav.StoreFavActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

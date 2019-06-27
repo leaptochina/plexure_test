@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+  android:background="@drawable/item_choose_effect"
+  android:layout_width="match_parent" android:layout_height="100dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+
+      android:layout_marginLeft="10dp">
+
+      <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上地店"
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+      <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="0dp"
+        android:text="沖縄県沖縄市上地４－２１－６"
+        android:textColor="#555"
+        android:textSize="12dp" />
+
+      <TextView
+        android:id="@+id/featureList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/address"
+        android:layout_marginTop="0dp"
+        android:text="FREE_WIFI, DRIVETHR, BF, TABLE_DELIVERY"
+        android:textColor="#555"
+        android:textSize="12dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+
+      android:layout_centerVertical="true"
+      android:layout_marginRight="10dp">
+
+      <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="648m"
+        android:textColor="#912CEE"
+        android:textSize="20dp" />
+
+    </RelativeLayout>
+  </RelativeLayout>
+
+
+</LinearLayout>
