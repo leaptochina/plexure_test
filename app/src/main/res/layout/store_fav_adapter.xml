@@ -4,10 +4,10 @@
   android:layout_width="match_parent" android:layout_height="100dp">
 
   <RelativeLayout
+    android:id="@+id/rl_total_adapter"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
 
-    >
+    android:layout_height="match_parent">
 
     <RelativeLayout
       android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
         android:textSize="12dp" />
 
       <TextView
-        android:id="@+id/featureList"
+        android:id="@+id/feature_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/address"

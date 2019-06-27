@@ -1,5 +1,6 @@
 package com.pine.prexuretest.activitys.store_fav.store_list
 
+import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.pine.prexuretest.R
 import com.pine.prexuretest.activitys.store_fav.StoreFavActivity
 import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavSharePreference
 import com.pine.prexuretest.beans.Store
+import kotlinx.android.synthetic.main.store_list_adapter.view.*
 
 
 class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
@@ -50,9 +52,22 @@ class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAda
     }
 
     holder.distance!!.text = (data.distance / 1000).toString() + " km";
-    holder.featureList!!.text = data.featureList.toString();
+    holder.feature_list!!.text = data.featureList.toString();
     holder.name!!.text = data.name
     holder.switch_fav!!.isChecked = false
+
+    //Change backgrand Gray if distance is too far
+    if (data.distance <= 8600000){
+      holder.switch_fav!!.isEnabled = true;
+      holder.itemView.alpha = 1f;
+      holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+
+    }
+    else{
+      holder.switch_fav!!.isEnabled = false;
+      holder.itemView.alpha = 0.75f;
+      holder.itemView.setBackgroundColor(Color.GRAY);
+    }
 
     for(favs in StoreFavSharePreference.i().favStores){
       if (favs.id == data.id){
