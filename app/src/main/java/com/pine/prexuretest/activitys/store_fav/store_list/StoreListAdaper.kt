@@ -5,11 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
+import android.widget.CompoundButton
 import com.blueberrysolution.pinelib19.activity.I
 import com.blueberrysolution.pinelib19.addone.broadcast.Broadcast
 import com.blueberrysolution.pinelib19.addone.broadcast.OnBroadcast
 import com.blueberrysolution.pinelib19.addone.broadcast.gps.GPS
 import com.blueberrysolution.pinelib19.addone.broadcast.gps.OnGpsBroadcast
+import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnCheckedChangeListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnClickListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnItemClickListener
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyViewHolder
@@ -17,9 +19,11 @@ import com.blueberrysolution.pinelib19.view.recycler_view.MyRecyViewHolder
 import com.blueberrysolution.pinelib19.view.recycler_view.RecyclerViewBaseAdapter
 import com.pine.prexuretest.R
 import com.pine.prexuretest.activitys.store_fav.StoreFavActivity
+import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavSharePreference
+import com.pine.prexuretest.beans.Store
 
 
-class StoreListAdaper(var upperActivity: StoreListFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
+class StoreListAdaper(var upperFregment: StoreListFragment): RecyclerViewBaseAdapter<StoreListViewHolder>() {
 
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreListViewHolder {
@@ -28,23 +32,47 @@ class StoreListAdaper(var upperActivity: StoreListFragment): RecyclerViewBaseAda
 
   override fun getItemCount(): Int {
 
-    return upperActivity.processedList.count();
+    return upperFregment.processedList.count();
 
   }
 
   override fun onBindViewHolder(holder: StoreListViewHolder, position: Int) {
 
-    var data = upperActivity.processedList[position];
+    holder.switch_fav!!.setOnCheckedChangeListener(null)
+
+    var data = upperFregment.processedList[position];
 
 
     holder.address!!.text = data.address
     holder.distance!!.text = (data.distance / 1000).toString() + " km";
     holder.featureList!!.text = data.featureList.toString();
     holder.name!!.text = data.name
+    holder.switch_fav!!.isChecked = false
+
+    for(favs in StoreFavSharePreference.i().favStores){
+      if (favs.id == data.id){
+        holder.switch_fav!!.isChecked = true;
+        break;
+      }
+    }
 
 
-    //holder.itemView.tag = fav;
-    //holder.itemView.setOnClickListener(MyOnClickListener(::onFavListClick))
+    holder.switch_fav!!.tag = data;
+    holder.switch_fav!!.setOnCheckedChangeListener(MyOnCheckedChangeListener(::onAddOrRemoveFavClick))
 
+  }
+
+  fun onAddOrRemoveFavClick(buttonView: CompoundButton?, isChecked: Boolean) {
+    var store = buttonView!!.tag as Store;
+
+    if (isChecked){
+      StoreFavSharePreference.i().add(store);
+    }
+    else{
+      StoreFavSharePreference.i().remove(store);
+    }
+
+
+    upperFregment.storeFavActivity.storeFavFragment!!.favAdpter.notifyDataSetChanged();
   }
 }

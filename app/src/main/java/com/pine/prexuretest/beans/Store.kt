@@ -8,4 +8,5 @@ data class Store(
     val latitude: Double,
     val longitude: Double,
     val name: String
+
 )
