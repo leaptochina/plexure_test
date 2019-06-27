@@ -4,35 +4,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import com.blueberrysolution.pinelib19.activity.A
-import com.blueberrysolution.pinelib19.activity.I
 import com.blueberrysolution.pinelib19.activity.T
 import com.blueberrysolution.pinelib19.addone.broadcast.Broadcast
 import com.blueberrysolution.pinelib19.addone.broadcast.OnBroadcast
 import com.blueberrysolution.pinelib19.addone.broadcast.gps.OnGpsBroadcast
 import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnClickListener
-import com.blueberrysolution.pinelib19.addone.inject_replace.MyOnItemClickListener
-import com.blueberrysolution.pinelib19.addone.mytimer.MyTimer
-import com.blueberrysolution.pinelib19.addone.mytimer.OnTimerListener
-import com.blueberrysolution.pinelib19.net.entry.N
 import com.blueberrysolution.pinelib19.view.recycler_view.RecyViewSetup
 import com.blueberrysolution.pinelib19.view.recycler_view.RefreshLoadmoreListener
 import com.pine.prexuretest.R
 import com.pine.prexuretest.activitys.store_fav.StoreFavActivity
-import com.pine.prexuretest.activitys.store_fav.store_fav.StoreFavSharePreference
 import com.pine.prexuretest.beans.Store
 import com.pine.prexuretest.retrofit.Requests
 import com.pine.prexuretest.retrofit.RetrofitManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_store_fav.*
 import kotlinx.android.synthetic.main.store_list.*
-import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.Observer
+import kotlinx.android.synthetic.main.store_list_title.*
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragment.app.Fragment(),
@@ -49,6 +44,7 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   var processedList: List<Store> = ArrayList<Store>();
 
   var isShowAddress = false;
+  var sortMethod = 0;
 
   var api = RetrofitManager.i().create(Requests::class.java)
 
@@ -61,7 +57,41 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
     storeAdpter = StoreListAdaper(this)
     Broadcast.i.reg("onGpsLocationChanged", this)
 
+
+
     return innerView;
+  }
+
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    layout_filter_btn.setOnClickListener(MyOnClickListener(::onFilterClick))
+    layout_sort_btn.setOnClickListener(MyOnClickListener(::onSortClick))
+  }
+
+  fun onFilterClick(view: View) {
+
+  }
+
+  fun onSortClick(view: View) {
+    if (sortMethod == 0){
+      sortMethod = 1;
+      sort_btn.setImageResource(R.drawable.xiangshangzhanhang)
+      T.t("Sort by distance (Increase)")
+      //increase
+    }
+    else if (sortMethod == 1){
+      sortMethod = 2;
+      sort_btn.setImageResource(R.drawable.xiangxiazhanhang)
+      T.t("Sort by distance (Decrease)")
+      //Decrease
+    }
+    else{
+      sortMethod = 0;
+      sort_btn.setImageResource(R.drawable.kuaisubianpai)
+      T.t("Default Sort")
+      //Default
+    }
+    sortData()
   }
 
   override fun onBroadcast(key: String, withObject: Any?) {
@@ -76,13 +106,6 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
-
-
-
-
-
-
 
     refreshLoadmoreListener = RefreshLoadmoreListener(swipe_refresh_store_list, ::refreshData)
     RecyViewSetup(recycler_view_store_list, storeAdpter).setOnRefreshLoadmoreListener(refreshLoadmoreListener).build()
@@ -123,6 +146,17 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
   private fun sortData() {
     processedList = originStoreInfo;
 
+    if (sortMethod > 0){
+      Collections.sort(processedList, object : Comparator<Store>{
+        override fun compare(o1: Store, o2: Store): Int {
+          var i = o1.distance - o2.distance
+          if (sortMethod == 1) {
+            i = -i
+          }
+          return i
+        }
+      })
+    }
 
 
 
@@ -170,9 +204,9 @@ class StoreListFragment(var storeFavActivity: StoreFavActivity) : androidx.fragm
       }
     }
 
-    observable.subscribeOn(Schedulers.newThread()) // 1. 指定被观察者 生产事件的线程
-      .observeOn(AndroidSchedulers.mainThread())  // 2. 指定观察者 接收 & 响应事件的线程
-      .subscribe(observer); // 3. 最后再通过订阅（subscribe）连接观察者和被观察者
+    observable.subscribeOn(Schedulers.newThread())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(observer);
 
   }
 
