@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">PineLib19</string>
+    <string name="one_more_time_to_exit">Press one more time to exit</string>
+
+    <string name="float_windows_allow">Please Allow Draw over other App to enable Float Windows</string>
+</resources>

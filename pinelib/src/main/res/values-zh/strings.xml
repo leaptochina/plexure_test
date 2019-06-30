@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PineLib19</string>
+    <string name="one_more_time_to_exit">再按一次退出</string>
+
+    <string name="float_windows_allow">需要这个权限显示悬浮窗，请允许</string>
+
+</resources>
